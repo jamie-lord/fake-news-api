@@ -1,5 +1,8 @@
-﻿using FakeNewsAPI.Models;
+﻿using FakeNewsAPI.Helpers;
+using FakeNewsAPI.Models;
 using System;
+using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.ServiceModel.Syndication;
 using System.Xml;
 
@@ -34,17 +37,33 @@ namespace FakeNewsAPI.BackgroundTasks
 
                 var title = rssFormatter.Feed.Title.Text;
 
-                foreach (var syndicationItem in rssFormatter.Feed.Items)
+                foreach (SyndicationItem syndicationItem in rssFormatter.Feed.Items)
                 {
-                    //Console.WriteLine("Article: {0}",
-                    //   syndicationItem.Title.Text);
-                    //Console.WriteLine("URL: {0}",
-                    //   syndicationItem.Links[0].Uri);
-                    //Console.WriteLine("Summary: {0}",
-                    //   syndicationItem.Summary.Text);
-                    //Console.WriteLine();
+                    AddNews(syndicationItem, source);
                 }
+                source.LastScrape = DateTime.Now;
+                db.Sources.AddOrUpdate(source);
             }
+            db.SaveChanges();
+        }
+
+        private void AddNews(SyndicationItem syndicationItem, Source source)
+        {
+            News news = new News();
+            news.Url = syndicationItem.Links[0].Uri.ToString();
+            List<string> authors = new List<string>();
+            foreach (var author in syndicationItem.Authors)
+            {
+                authors.Add(author.Name.ToString());
+            }
+            news.Authors = authors;
+            news.Published = syndicationItem.PublishDate.DateTime.ToNullIfTooEarlyForDb();
+            news.Updated = syndicationItem.LastUpdatedTime.DateTime.ToNullIfTooEarlyForDb();
+            news.Summary = syndicationItem.Summary.Text;
+            news.Source = source;
+            news.Title = syndicationItem.Title.Text;
+
+            db.News.AddOrUpdate(news);
         }
     }
 }

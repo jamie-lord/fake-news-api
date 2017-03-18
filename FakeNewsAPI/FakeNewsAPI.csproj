@@ -247,9 +247,26 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\DbDateHelper.cs" />
     <Compile Include="Migrations\201703181533359_Initial.cs" />
     <Compile Include="Migrations\201703181533359_Initial.Designer.cs">
       <DependentUpon>201703181533359_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703181541345_AddedIndexes.cs" />
+    <Compile Include="Migrations\201703181541345_AddedIndexes.Designer.cs">
+      <DependentUpon>201703181541345_AddedIndexes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703181601390_AddedExtraNewsAttributes.cs" />
+    <Compile Include="Migrations\201703181601390_AddedExtraNewsAttributes.Designer.cs">
+      <DependentUpon>201703181601390_AddedExtraNewsAttributes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703181628239_AddedDateTimeFix.cs" />
+    <Compile Include="Migrations\201703181628239_AddedDateTimeFix.Designer.cs">
+      <DependentUpon>201703181628239_AddedDateTimeFix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703181635080_AddedDateTimeFixAgain.cs" />
+    <Compile Include="Migrations\201703181635080_AddedDateTimeFixAgain.Designer.cs">
+      <DependentUpon>201703181635080_AddedDateTimeFixAgain.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -335,6 +352,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201703181533359_Initial.resx">
       <DependentUpon>201703181533359_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703181541345_AddedIndexes.resx">
+      <DependentUpon>201703181541345_AddedIndexes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703181601390_AddedExtraNewsAttributes.resx">
+      <DependentUpon>201703181601390_AddedExtraNewsAttributes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703181628239_AddedDateTimeFix.resx">
+      <DependentUpon>201703181628239_AddedDateTimeFix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703181635080_AddedDateTimeFixAgain.resx">
+      <DependentUpon>201703181635080_AddedDateTimeFixAgain.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

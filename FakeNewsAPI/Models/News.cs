@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FakeNewsAPI.Models
 {
@@ -17,11 +19,18 @@ namespace FakeNewsAPI.Models
         [Required]
         public Source Source { get; set; }
 
-        public DateTime Published { get; set; }
+        public DateTime? Published { get; set; }
+
+        public DateTime? Updated { get; set; }
 
         public string ImageUrl { get; set; }
 
-        public string[] Keywords { get; set; }
+        public List<string> Authors { get; set; }
+
+        public string Summary { get; set; }
+
+        [Index]
+        public List<string> Keywords { get; set; }
 
         [Required]
         [DefaultValue(0.0)]

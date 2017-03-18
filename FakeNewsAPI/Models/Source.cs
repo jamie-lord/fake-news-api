@@ -13,7 +13,7 @@ namespace FakeNewsAPI.Models
 
         public string Title { get; set; }
 
-        public DateTime LastScrape { get; set; }
+        public DateTime? LastScrape { get; set; }
 
         [Required]
         [DefaultValue(0.0)]
