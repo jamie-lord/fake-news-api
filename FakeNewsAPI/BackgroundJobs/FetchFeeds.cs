@@ -1,8 +1,7 @@
 ﻿using FakeNewsAPI.Helpers;
 using FakeNewsAPI.Models;
+using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
-using OpenScraping;
-using OpenScraping.Config;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
@@ -11,6 +10,7 @@ using System.Net;
 using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
 using System.Xml;
+using X.Text;
 
 namespace FakeNewsAPI.BackgroundTasks
 {
@@ -57,7 +57,6 @@ namespace FakeNewsAPI.BackgroundTasks
         private void AddNews(SyndicationItem syndicationItem, Source source)
         {
             string uri = syndicationItem.Links[0].Uri.ToString();
-            //ScrapeMainContent(uri);
             if (db.News.Any(n => n.Url == uri))
             {
                 return;
@@ -89,31 +88,42 @@ namespace FakeNewsAPI.BackgroundTasks
             news.Source = source;
             news.Title = syndicationItem.Title.Text;
 
-
+            var keys = ScrapeMainContent(news.Url);
+            if (keys != null && keys.Count > 0)
+            {
+                news.Keywords = keys;
+            }
 
             db.News.AddOrUpdate(news);
         }
 
-        private void ScrapeMainContent(string uri)
+        private List<string> ScrapeMainContent(string uri)
         {
-            using (WebClient client = new WebClient())
+            var keywords = new List<string>();
+            try
             {
-                var configJson = @"{'body': '//div[@itemprop=\'articleBody\']'}";
-                var config = StructuredDataConfig.ParseJsonString(configJson);
-                string html = Regex.Replace(client.DownloadString(uri), @"\t|\n|\r", " ");
-                var openScraping = new StructuredDataExtractor(config);
-                var scrapingResults = openScraping.Extract(html);
-
-                try
+                HtmlWeb web = new HtmlWeb();
+                HtmlDocument document = web.Load(uri);
+                var article = "";
+                foreach (HtmlNode paragraph in document.DocumentNode.SelectNodes("//p"))
                 {
-                    var article = scrapingResults.FindTokens("body").First().ToString();
-
+                    if (paragraph.InnerText == null || paragraph.InnerText.Length < 60)
+                    {
+                        continue;
+                    }
+                    var t = Regex.Replace(paragraph.InnerText, @"\t|\n|\r", " ");
+                    article += " " + t;
                 }
-                catch (Exception e)
+                if (article.Length > 0)
                 {
-                    Console.WriteLine(e);
+                    keywords = TextHelper.GetKeywords(article, 30).Split(new string[] { ", " }, StringSplitOptions.None).ToList();
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return keywords;
         }
     }
 
