@@ -1,9 +1,13 @@
 ﻿using FakeNewsAPI.Helpers;
 using FakeNewsAPI.Models;
+using Newtonsoft.Json;
+using OpenScraping;
+using OpenScraping.Config;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
+using System.Net;
 using System.ServiceModel.Syndication;
 using System.Xml;
 
@@ -26,21 +30,15 @@ namespace FakeNewsAPI.BackgroundTasks
         {
             foreach (Source source in db.Sources)
             {
-                Rss20FeedFormatter rssFormatter;
-
-                using (var xmlReader = XmlReader.Create
-                   (source.RSSurl))
+                WebClient client = new WebClient();
+                using (XmlReader reader = new SyndicationFeedXmlReader(client.OpenRead(source.RSSurl)))
                 {
-                    rssFormatter = new Rss20FeedFormatter();
-                    rssFormatter.ReadFrom(xmlReader);
+                    SyndicationFeed feed = SyndicationFeed.Load(reader);
 
-                }
-
-                var title = rssFormatter.Feed.Title.Text;
-
-                foreach (SyndicationItem syndicationItem in rssFormatter.Feed.Items)
-                {
-                    AddNews(syndicationItem, source);
+                    foreach (SyndicationItem syndicationItem in feed.Items)
+                    {
+                        AddNews(syndicationItem, source);
+                    }
                 }
                 source.LastScrape = DateTime.Now;
                 db.Sources.AddOrUpdate(source);
@@ -60,7 +58,10 @@ namespace FakeNewsAPI.BackgroundTasks
             List<string> authors = new List<string>();
             foreach (var author in syndicationItem.Authors)
             {
-                authors.Add(author.Name.ToString());
+                if (author.Name != null)
+                {
+                    authors.Add(author.Name.ToString());
+                }
             }
             news.Authors = authors;
             news.Published = syndicationItem.PublishDate.DateTime.ToNullIfTooEarlyForDb();
@@ -69,7 +70,32 @@ namespace FakeNewsAPI.BackgroundTasks
             news.Source = source;
             news.Title = syndicationItem.Title.Text;
 
+            ScrapeMainContent(news.Url);
+
             db.News.AddOrUpdate(news);
+        }
+
+        private void ScrapeMainContent(string uri)
+        {
+            var configJson = @"
+            {
+                'body': '//div[@itemprop=\'articleBody\']'
+            }
+            ";
+
+            var config = StructuredDataConfig.ParseJsonString(configJson);
+
+            using (WebClient client = new WebClient())
+            {
+                string html = client.DownloadString(uri);
+
+                var openScraping = new StructuredDataExtractor(config);
+                var scrapingResults = openScraping.Extract(html);
+
+                var r = JsonConvert.SerializeObject(scrapingResults, Newtonsoft.Json.Formatting.Indented);
+            }
+
+
         }
     }
 }
