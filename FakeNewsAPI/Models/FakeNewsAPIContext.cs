@@ -23,5 +23,7 @@ namespace FakeNewsAPI.Models
         {
             base.OnModelCreating(modelBuilder);
         }
+
+        public System.Data.Entity.DbSet<FakeNewsAPI.Models.Source> Sources { get; set; }
     }
 }
