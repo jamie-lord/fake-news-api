@@ -32,14 +32,21 @@ namespace FakeNewsAPI.BackgroundTasks
             foreach (Source source in db.Sources)
             {
                 WebClient client = new WebClient();
-                using (XmlReader reader = new SyndicationFeedXmlReader(client.OpenRead(source.RSSurl)))
+                try
                 {
-                    SyndicationFeed feed = SyndicationFeed.Load(reader);
-
-                    foreach (SyndicationItem syndicationItem in feed.Items)
+                    using (XmlReader reader = new SyndicationFeedXmlReader(client.OpenRead(source.RSSurl)))
                     {
-                        AddNews(syndicationItem, source);
+                        SyndicationFeed feed = SyndicationFeed.Load(reader);
+
+                        foreach (SyndicationItem syndicationItem in feed.Items)
+                        {
+                            AddNews(syndicationItem, source);
+                        }
                     }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
                 }
                 source.LastScrape = DateTime.Now;
                 db.Sources.AddOrUpdate(source);
