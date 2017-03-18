@@ -50,7 +50,7 @@ namespace FakeNewsAPI.BackgroundTasks
         private void AddNews(SyndicationItem syndicationItem, Source source)
         {
             string uri = syndicationItem.Links[0].Uri.ToString();
-            ScrapeMainContent(uri);
+            //ScrapeMainContent(uri);
             if (db.News.Any(n => n.Url == uri))
             {
                 return;
@@ -62,10 +62,20 @@ namespace FakeNewsAPI.BackgroundTasks
             {
                 if (author.Name != null)
                 {
-                    authors.Add(author.Name.ToString());
+                    authors.Add(author.Name);
                 }
             }
             news.Authors = authors;
+            List<string> categories = new List<string>();
+            foreach (var category in syndicationItem.Categories)
+            {
+                if (category.Name != null)
+                {
+                    categories.Add(category.Name);
+                }
+            }
+            news.Categories = categories;
+
             news.Published = syndicationItem.PublishDate.DateTime.ToNullIfTooEarlyForDb();
             news.Updated = syndicationItem.LastUpdatedTime.DateTime.ToNullIfTooEarlyForDb();
             news.Summary = syndicationItem.Summary.Text;

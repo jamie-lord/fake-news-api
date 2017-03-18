@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace FakeNewsAPI.Models
 {
@@ -19,7 +20,7 @@ namespace FakeNewsAPI.Models
         public string Title { get; set; }
 
         [Required]
-        public Source Source { get; set; }
+        public virtual Source Source { get; set; }
 
         public DateTime? Published { get; set; }
 
@@ -27,12 +28,28 @@ namespace FakeNewsAPI.Models
 
         public string ImageUrl { get; set; }
 
-        public List<string> Authors { get; set; }
+        public ICollection<string> Authors { get; set; }
+        public string AuthorsString
+        {
+            get { return (Authors != null) ? string.Join("^", Authors) : null; }
+            set { Authors = value.Split('^').ToList(); }
+        }
 
         public string Summary { get; set; }
 
-        [Index]
-        public List<string> Keywords { get; set; }
+        public ICollection<string> Categories { get; set; }
+        public string CategoriesString
+        {
+            get { return (Categories != null) ? string.Join("^", Categories) : null; }
+            set { Categories = value.Split('^').ToList(); }
+        }
+
+        public ICollection<string> Keywords { get; set; }
+        public string KeywordsString
+        {
+            get { return (Keywords != null) ? string.Join("^", Keywords) : null; }
+            set { Keywords = value.Split('^').ToList(); }
+        }
 
         [Required]
         [DefaultValue(0.0)]
