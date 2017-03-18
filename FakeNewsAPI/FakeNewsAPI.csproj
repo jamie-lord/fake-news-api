@@ -250,6 +250,10 @@
     <Compile Include="Migrations\201703181304021_AddedSources.Designer.cs">
       <DependentUpon>201703181304021_AddedSources.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703181310314_AddedPublisherSourceToNewsModel.cs" />
+    <Compile Include="Migrations\201703181310314_AddedPublisherSourceToNewsModel.Designer.cs">
+      <DependentUpon>201703181310314_AddedPublisherSourceToNewsModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -337,6 +341,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703181304021_AddedSources.resx">
       <DependentUpon>201703181304021_AddedSources.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703181310314_AddedPublisherSourceToNewsModel.resx">
+      <DependentUpon>201703181310314_AddedPublisherSourceToNewsModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

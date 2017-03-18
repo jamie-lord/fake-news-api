@@ -15,7 +15,7 @@ namespace FakeNewsAPI.Models
         public string Title { get; set; }
 
         [Required]
-        public string Publisher { get; set; }
+        public Source Source { get; set; }
 
         public DateTime Published { get; set; }
 
