@@ -3,6 +3,7 @@ using FakeNewsAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
+using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Xml;
 
@@ -49,8 +50,13 @@ namespace FakeNewsAPI.BackgroundTasks
 
         private void AddNews(SyndicationItem syndicationItem, Source source)
         {
+            string uri = syndicationItem.Links[0].Uri.ToString();
+            if (db.News.Any(n => n.Url == uri))
+            {
+                return;
+            }
             News news = new News();
-            news.Url = syndicationItem.Links[0].Uri.ToString();
+            news.Url = uri;
             List<string> authors = new List<string>();
             foreach (var author in syndicationItem.Authors)
             {

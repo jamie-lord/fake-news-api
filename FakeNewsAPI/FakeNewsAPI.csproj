@@ -268,6 +268,10 @@
     <Compile Include="Migrations\201703181635080_AddedDateTimeFixAgain.Designer.cs">
       <DependentUpon>201703181635080_AddedDateTimeFixAgain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703181731033_MadeNewsUrlUnique.cs" />
+    <Compile Include="Migrations\201703181731033_MadeNewsUrlUnique.Designer.cs">
+      <DependentUpon>201703181731033_MadeNewsUrlUnique.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -364,6 +368,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703181635080_AddedDateTimeFixAgain.resx">
       <DependentUpon>201703181635080_AddedDateTimeFixAgain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703181731033_MadeNewsUrlUnique.resx">
+      <DependentUpon>201703181731033_MadeNewsUrlUnique.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -11,6 +11,8 @@ namespace FakeNewsAPI.Models
         public int Id { get; set; }
 
         [Required]
+        [StringLength(450)]
+        [Index(IsUnique = true)]
         public string Url { get; set; }
 
         [Required]
