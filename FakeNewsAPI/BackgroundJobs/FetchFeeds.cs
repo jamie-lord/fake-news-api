@@ -1,6 +1,6 @@
 ﻿using FakeNewsAPI.Helpers;
 using FakeNewsAPI.Models;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OpenScraping;
 using OpenScraping.Config;
 using System;
@@ -9,6 +9,7 @@ using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.ServiceModel.Syndication;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace FakeNewsAPI.BackgroundTasks
@@ -49,6 +50,7 @@ namespace FakeNewsAPI.BackgroundTasks
         private void AddNews(SyndicationItem syndicationItem, Source source)
         {
             string uri = syndicationItem.Links[0].Uri.ToString();
+            ScrapeMainContent(uri);
             if (db.News.Any(n => n.Url == uri))
             {
                 return;
@@ -70,32 +72,63 @@ namespace FakeNewsAPI.BackgroundTasks
             news.Source = source;
             news.Title = syndicationItem.Title.Text;
 
-            ScrapeMainContent(news.Url);
+
 
             db.News.AddOrUpdate(news);
         }
 
         private void ScrapeMainContent(string uri)
         {
-            var configJson = @"
-            {
-                'body': '//div[@itemprop=\'articleBody\']'
-            }
-            ";
-
-            var config = StructuredDataConfig.ParseJsonString(configJson);
-
             using (WebClient client = new WebClient())
             {
-                string html = client.DownloadString(uri);
-
+                var configJson = @"{'body': '//div[@itemprop=\'articleBody\']'}";
+                var config = StructuredDataConfig.ParseJsonString(configJson);
+                string html = Regex.Replace(client.DownloadString(uri), @"\t|\n|\r", " ");
                 var openScraping = new StructuredDataExtractor(config);
                 var scrapingResults = openScraping.Extract(html);
 
-                var r = JsonConvert.SerializeObject(scrapingResults, Newtonsoft.Json.Formatting.Indented);
+                try
+                {
+                    var article = scrapingResults.FindTokens("body").First().ToString();
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
+        }
+    }
 
+    public static class JsonExtensions
+    {
+        public static List<JToken> FindTokens(this JToken containerToken, string name)
+        {
+            List<JToken> matches = new List<JToken>();
+            FindTokens(containerToken, name, matches);
+            return matches;
+        }
 
+        private static void FindTokens(JToken containerToken, string name, List<JToken> matches)
+        {
+            if (containerToken.Type == JTokenType.Object)
+            {
+                foreach (JProperty child in containerToken.Children<JProperty>())
+                {
+                    if (child.Name == name)
+                    {
+                        matches.Add(child.Value);
+                    }
+                    FindTokens(child.Value, name, matches);
+                }
+            }
+            else if (containerToken.Type == JTokenType.Array)
+            {
+                foreach (JToken child in containerToken.Children())
+                {
+                    FindTokens(child, name, matches);
+                }
+            }
         }
     }
 }
