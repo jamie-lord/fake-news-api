@@ -3,9 +3,9 @@ using System.Web.Http;
 
 namespace FakeNewsAPI.Controllers
 {
-    public class LegitController : ApiController
+    public class FakeController : ApiController
     {
-        public IQueryable<NewsResponse> GetLegitNews()
+        public IQueryable<NewsResponse> GetFakeNews()
         {
             return null;
         }
