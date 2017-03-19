@@ -3,7 +3,7 @@ namespace FakeNewsAPI.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class RemovedKeywordId : DbMigration
+    public partial class FixedNewsKeywords : DbMigration
     {
         public override void Up()
         {

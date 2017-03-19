@@ -7,13 +7,13 @@ namespace FakeNewsAPI.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class RemovedKeywordId : IMigrationMetadata
+    public sealed partial class FixedNewsKeywords : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RemovedKeywordId));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(FixedNewsKeywords));
         
         string IMigrationMetadata.Id
         {
-            get { return "201703190549293_RemovedKeywordId"; }
+            get { return "201703190654598_FixedNewsKeywords"; }
         }
         
         string IMigrationMetadata.Source
