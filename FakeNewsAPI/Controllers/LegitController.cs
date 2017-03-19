@@ -2,9 +2,11 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace FakeNewsAPI.Controllers
 {
+    [EnableCors(origins: "*", headers: "Access-Control-Allow-Origin: *", methods: "*")]
     public class LegitController : ApiController
     {
         private readonly FakeNewsAPIContext db = new FakeNewsAPIContext();
