@@ -9,6 +9,10 @@ namespace FakeNewsAPI.Models
 {
     public class News
     {
+        public News()
+        {
+            Keywords = new HashSet<Keyword>();
+        }
         public int Id { get; set; }
 
         [Required]
@@ -44,15 +48,10 @@ namespace FakeNewsAPI.Models
             set { Categories = value.Split('^').ToList(); }
         }
 
-        public ICollection<string> Keywords { get; set; }
-        public string KeywordsString
-        {
-            get { return (Keywords != null) ? string.Join("^", Keywords) : null; }
-            set { Keywords = value.Split('^').ToList(); }
-        }
-
         [Required]
         [DefaultValue(0.0)]
         public double Score { get; set; }
+
+        public virtual ICollection<Keyword> Keywords { get; set; }
     }
 }

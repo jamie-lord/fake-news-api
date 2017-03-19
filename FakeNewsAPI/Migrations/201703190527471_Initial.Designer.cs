@@ -13,7 +13,7 @@ namespace FakeNewsAPI.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201703182049483_Initial"; }
+            get { return "201703190527471_Initial"; }
         }
         
         string IMigrationMetadata.Source

@@ -25,5 +25,7 @@ namespace FakeNewsAPI.Models
         }
 
         public DbSet<Source> Sources { get; set; }
+
+        public DbSet<Keyword> Keywords { get; set; }
     }
 }
